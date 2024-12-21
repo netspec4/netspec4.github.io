@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Video Feed</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 50px;
+        }
+        video {
+            width: 80%;
+            height: auto;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        input {
+            margin: 5px;
+            padding: 10px;
+            font-size: 16px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Live Video Feed</h1>
+    <div id="login-form">
+        <input type="text" id="username" placeholder="Username">
+        <input type="password" id="password" placeholder="Password">
+        <button onclick="startVideo()">Submit</button>
+    </div>
+    <div id="video-container" style="display: none;">
+        <h2>Live Feed</h2>
+        <img id="video-feed" alt="Video Feed" />
+    </div>
+    <script>
+        function startVideo() {
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+            const videoFeed = document.getElementById("video-feed");
+            const loginForm = document.getElementById("login-form");
+            const videoContainer = document.getElementById("video-container");
+
+            const headers = new Headers();
+            headers.append('Authorization', 'Basic ' + btoa(username + ':' + password));
+
+            fetch('http://<YOUR_PI_IP>:5000/video_feed', { headers })
+                .then(response => {
+                    if (response.ok) {
+                        videoFeed.src = 'http://100.110.26.162:5000/video_feed';
+                        loginForm.style.display = "none";
+                        videoContainer.style.display = "block";
+                    } else {
+                        alert("Invalid credentials. Please try again.");
+                    }
+                })
+                .catch(err => console.error('Error fetching video feed:', err));
+        }
+    </script>
+</body>
+</html>
